@@ -1,0 +1,31 @@
+{
+  "name": "@gallant/schema",
+  "version": "0.1.0",
+  "description": "Library to handle schema validation by re-using existing Typescript interface and type declarations",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "repository": "pedromsilva/gallant-schema",
+  "keywords": [
+    "schema",
+    "validation",
+    "javascript",
+    "typescript"
+  ],
+  "scripts": {
+    "test": "tape lib/Specs/**/*.js | npx tap-dot",
+    "test-raw": "tape lib/Specs/**/*.js"
+  },
+  "author": "Pedro M. Silva <pemiolsi@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "object-merge-advanced": "^12.1.0",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/tape": "^4.13.0",
+    "@types/tape-catch": "^1.0.0",
+    "tap-dot": "^2.0.0",
+    "tape": "^5.0.1",
+    "tape-catch": "^1.0.6"
+  }
+}
