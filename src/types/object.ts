@@ -61,6 +61,8 @@ export class ObjectType extends Type {
 
         const result : any = {};
 
+        data = data || {};
+        
         for ( let key of Object.keys( data ) ) {
             if ( key in this.subSchema ) {
                 requiredKeys.delete( key );

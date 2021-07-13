@@ -72,7 +72,7 @@ class MembersTransformer {
     transformMembersAst ( root: FromAstTransformer, members: Iterable<ts.TypeElement>, options: AstOptions ): schema.Type {
         const subSchema: any = {};
 
-        let strict: boolean = true;
+        let strict: boolean = options.defaultObjectStrict;
 
         for ( const member of members ) {
             if ( ts.isPropertySignature( member ) ) {

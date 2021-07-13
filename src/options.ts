@@ -19,6 +19,7 @@ export interface AstOptions {
     references: AstReference[];
     defaultNumberStrict: boolean;
     defaultBooleanStrict: boolean;
+    defaultObjectStrict: boolean;
 }
 
 export interface AstReference {
@@ -38,3 +39,33 @@ export interface AstIdentifiers {
 }
 
 export interface AstSchemaIdentifiers {}
+
+export function deepMerge<A, B> ( objA: A, objB: B ): A & B {
+    if ( objB === void 0 ) {
+        return objA as A & B;
+    }
+    
+    if ( objA instanceof Array && objB instanceof Array ) {
+        return objA.concat( objB ) as any;
+    } else if ( typeof objA === 'object' && typeof objB === 'object' ) {
+        const result = {} as any;
+
+        if ( objA != null ) {
+            for ( const key of Object.keys( objA ) ) {
+                result[ key ] = deepMerge( (objA as any)[ key ], (objB as any)?.[ key ] );
+            }
+        }
+
+        if ( objB != null ) {
+            for ( const key of Object.keys( objB ) ) {
+                if ( !( key in result ) ) {
+                    result[ key ] = ( objB as any )[ key ];
+                }
+            }
+        }
+
+        return result;
+    } else {
+        return objB as A & B;
+    }    
+}

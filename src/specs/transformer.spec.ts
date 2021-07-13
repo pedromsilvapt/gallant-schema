@@ -53,6 +53,10 @@ test( 'parser keywords', function ( t: test.Test ) {
     t.assert( type instanceof schema.NumberType, "Type is a number" );
     t.equals( type.strict, false, "Number is not strict" );
     
+    type = schema.parse(`number`, schema.createDefaultOptions( { defaultNumberStrict: false } ) );
+    t.assert( type instanceof schema.NumberType, "Type is a number" );
+    t.equals( type.strict, false, "Number is not strict" );
+    
     type = schema.parse(`string`);
     t.assert( type instanceof schema.StringType, "Type is a string" );
     

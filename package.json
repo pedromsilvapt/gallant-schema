@@ -1,6 +1,6 @@
 {
   "name": "@gallant/schema",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Library to handle schema validation by re-using existing Typescript interface and type declarations",
   "main": "./lib/main.js",
   "types": "./lib/main.d.ts",

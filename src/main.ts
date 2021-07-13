@@ -43,7 +43,7 @@ import { mergeAdvanced } from 'object-merge-advanced';
 import { Type } from './core';
 import { Extension } from './extension';
 import { Identifier } from './identifiers';
-import { AstOptions, AstPartialOptions } from './options';
+import { AstOptions, AstPartialOptions, deepMerge } from './options';
 import * as types from './types';
 
 // Extensions
@@ -64,6 +64,7 @@ export function createDefaultOptions ( customOptions: AstPartialOptions = {} ): 
         extensions: [ ...extensions ],
         defaultNumberStrict: true,
         defaultBooleanStrict: true,
+        defaultObjectStrict: false,
         identifiers: {
             Number: new Identifier( 'Number' ),
             String: new Identifier( 'String' ),
@@ -83,9 +84,7 @@ export function createDefaultOptions ( customOptions: AstPartialOptions = {} ): 
         options = extension.install( options as AstOptions ) || options;
     }
 
-    return mergeAdvanced( options as AstOptions, customOptions, {
-        hardArrayConcat: true,
-    } );
+    return deepMerge( options as AstOptions, customOptions );
 }
 
 export function normalize ( schema : any ) : Type {

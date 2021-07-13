@@ -35,8 +35,8 @@ export class TypesDictionary {
     }
 }
 
-export function parse ( code: string ) {
-    return parseMany( `type Schema = ` + code ).get( 'Schema' );
+export function parse ( code: string, options: AstOptions = createDefaultOptions() ) {
+    return parseMany( `type Schema = ` + code, options ).get( 'Schema' );
 }
 
 export function parseMany ( code: string, options: AstOptions = createDefaultOptions() ) : TypesDictionary {
