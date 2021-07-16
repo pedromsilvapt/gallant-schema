@@ -79,7 +79,7 @@ test( 'parser keywords', function ( t: test.Test ) {
 test( 'parser object', function ( t: test.Test ) {
     let type = schema.parse(`{}`);
     t.assert( type instanceof schema.ObjectType, "Type is an object" );
-    t.equals( type.strict, true, "Object is strict" );
+    t.equals( type.strict, false, "Object is strict" );
     t.equals( Object.keys(type.subSchema).length, 0, "Object has no members" );
 
     type = schema.parse(`object`);
@@ -98,7 +98,7 @@ test( 'parser object', function ( t: test.Test ) {
         fieldOptional?: number;
     }`);
     t.assert( type instanceof schema.ObjectType, "Type is an object" );
-    t.equals( type.strict, true, "Object is strict" );
+    t.equals( type.strict, false, "Object is strict" );
     t.equals( Object.keys(type.subSchema).length, 3, "Object has 3 members" );
     t.assert( type.subSchema['fieldString'] instanceof schema.StringType, "Object member 'fieldString' is a string" );
     t.assert( type.subSchema['fieldNumber'] instanceof schema.NumberType, "Object member 'fieldNumber' is a number" );
@@ -324,6 +324,38 @@ test( "stringifyMany", ( t: test.Test ) => {
 
 type Second = true;
 ` );
+
+    t.end();
+} );
+
+test( "compose", ( t: test.Test ) => {
+    const string = schema.parse( `string` );
+    const object = schema.compose`{ 
+        value: ${string};
+    }`;
+
+    let code = schema.parse(object);
+    t.assert( code instanceof schema.ObjectType, 'Type should be object' );
+    t.assert( code.subSchema.value instanceof schema.ReferenceType, 'Value should be a Reference type' );
+    t.assert( code.subSchema.value.childType instanceof schema.StringType, 'Value reference\'s child type should be a string' );
+    t.equals( code.subSchema.value.childType, string, 'String reference\'s child type should be the same instance as string' );
+
+    code = schema.parse(schema.compose`{
+        nested: ${ object },
+        string: ${ string },
+        nested2: ${ object }
+    }`);
+    t.assert( code instanceof schema.ObjectType, 'Type should be object' );
+    t.assert( code.subSchema.nested instanceof schema.ReferenceType, 'Nested should be a Reference type' );
+    t.assert( code.subSchema.nested.childType instanceof schema.ObjectType, 'Nested reference\'s child type should be an object' );
+
+    t.assert( code.subSchema.string instanceof schema.ReferenceType, 'String should be a Reference type' );
+    t.assert( code.subSchema.string.childType instanceof schema.StringType, 'String reference\'s child type should be a string' );
+    t.equals( code.subSchema.string.childType, string, 'String reference\'s child type should be the same instance as string' );
+    
+    t.assert( code.subSchema.nested2 instanceof schema.ReferenceType, 'Value should be a Reference type' );
+    t.assert( code.subSchema.nested2.childType instanceof schema.ObjectType, 'Nested reference\'s child type should be an object' );
+    t.equals( code.subSchema.nested.childType, code.subSchema.nested2.childType, 'Nested reference\'s child types be the same instance' );
 
     t.end();
 } );

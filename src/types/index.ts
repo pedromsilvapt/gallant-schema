@@ -8,6 +8,7 @@ export { IntersectionType } from './intersection';
 export { NumberType, NumberLike } from './number';
 export { ObjectType } from './object';
 export { OptionalType } from './optional';
+export { ReferenceType } from './reference';
 export { StringType, MaxLen, MaxLenType, MinLen, MinLenType, Email, EmailType } from './string';
 export { TupleType } from './tuple';
 export { UnionType } from './union';

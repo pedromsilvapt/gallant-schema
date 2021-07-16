@@ -1,5 +1,4 @@
-import { mergeAdvanced } from 'object-merge-advanced';
-import type { AstPartialOptions, AstOptions } from './options';
+import { AstPartialOptions, AstOptions, deepMerge } from './options';
 import type { FromAstTransformer, ToAstTransformer } from './transformer';
 
 export class Extension {
@@ -10,11 +9,15 @@ export class Extension {
     public defaultOptions: AstPartialOptions = {};
 
     public install ( config: AstOptions ): AstOptions | void {
-        config = mergeAdvanced( config, this.defaultOptions, {
-            hardArrayConcat: true,
-        } );
+        config = deepMerge( config, this.defaultOptions );
 
-        // TODO Install transformers
+        if ( this.fromAstTransformer != null ) {
+            config.fromAstTransformer.transformers.push( this.fromAstTransformer );
+        }
+
+        if ( this.toAstTransformer != null ) {
+            config.toAstTransformer.transformers.push( this.toAstTransformer );
+        }
 
         return config;
     }

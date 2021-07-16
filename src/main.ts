@@ -10,6 +10,10 @@ export * from './types';
 
 export {
     TypesDictionary,
+    PartialTypesDictionary,
+
+    compose,
+    composeMany,
 
     parse,
     parseFile,
@@ -39,11 +43,11 @@ export {
     toAst,
 } from './transformer';
 
-import { mergeAdvanced } from 'object-merge-advanced';
 import { Type } from './core';
 import { Extension } from './extension';
 import { Identifier } from './identifiers';
 import { AstOptions, AstPartialOptions, deepMerge } from './options';
+import { createRootFromAstTransformer, createRootToAstTransformer } from './transformer';
 import * as types from './types';
 
 // Extensions
@@ -51,17 +55,21 @@ import { NumberExtension } from './types/number';
 import { BooleanExtension } from './types/boolean';
 import { DateExtension } from './types/date';
 import { StringExtension } from './types/string';
+import { ReferenceExtension } from './types/reference';
 
 export const extensions: Extension[] = [
     new NumberExtension(),
     new BooleanExtension(),
     new DateExtension(),
     new StringExtension(),
+    new ReferenceExtension(),
 ];
 
 export function createDefaultOptions ( customOptions: AstPartialOptions = {} ): AstOptions {
     let options: AstPartialOptions = {
         extensions: [ ...extensions ],
+        fromAstTransformer: customOptions.fromAstTransformer || createRootFromAstTransformer(),
+        toAstTransformer: customOptions.toAstTransformer || createRootToAstTransformer(),
         defaultNumberStrict: true,
         defaultBooleanStrict: true,
         defaultObjectStrict: false,
@@ -84,8 +92,12 @@ export function createDefaultOptions ( customOptions: AstPartialOptions = {} ): 
         options = extension.install( options as AstOptions ) || options;
     }
 
-    return deepMerge( options as AstOptions, customOptions );
+    return deepMerge( options as AstOptions, customOptions, {
+        exclude: [ 'fromAstTransformer', 'toAstTransformer' ],
+    } );
 }
+
+export const defaultOptions = createDefaultOptions();
 
 export function normalize ( schema : any ) : Type {
     if ( schema instanceof Type ) {

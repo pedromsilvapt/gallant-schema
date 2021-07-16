@@ -7,8 +7,10 @@ export class Identifier {
         return this.qualifiedName[ this.qualifiedName.length - 1 ];
     }
     
-    public constructor (name: string) {
-        this.qualifiedName = name.split( '.' );
+    public constructor ( name: string | string[] ) {
+        this.qualifiedName = typeof name === 'string'
+            ? name.split( '.' )
+            : name;
     }
 
     public matchesNode ( node : ts.Node ) : boolean {
@@ -36,5 +38,27 @@ export class Identifier {
                 return false;
             }
         }
+    }
+
+    public toString () : string {
+        return this.qualifiedName.join( '.' );
+    }
+
+    public static fromNode ( node: ts.EntityName ) : Identifier {
+        const names: string[] = [];
+
+        while ( ts.isQualifiedName( node ) ) {
+            names.push( node.right.text );
+
+            node = node.left;
+        }
+
+        if ( ts.isIdentifier( node ) ) {
+            names.push( node.text );
+        }
+
+        names.reverse();
+
+        return new Identifier( names );
     }
 }
