@@ -416,7 +416,7 @@ export function createRootToAstTransformer () {
                                 );
                             } );
     
-                        if ( value.strict == false ) {
+                        if ( value.strict == false && options.defaultObjectStrict == true ) {
                             properties.push( factory.createIndexSignature(
                                 void 0,
                                 void 0,
